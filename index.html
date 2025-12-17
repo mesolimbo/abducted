@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <title>Abduction: The Grazing Limit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #f3e6d0; /* Aged paper color */
+        font-family: 'IM Fell English', serif;
+      }
+      /* Custom Hatching Pattern for CSS backgrounds */
+      .bg-hatch {
+        background-image: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 2px,
+          rgba(44, 28, 17, 0.1) 2px,
+          rgba(44, 28, 17, 0.1) 3px
+        );
+      }
+      .bg-paper {
+        background-color: #f3e6d0;
+        background-image: url("https://www.transparenttextures.com/patterns/aged-paper.png");
+      }
+      .ink-text {
+        color: #2c1c11;
+        text-shadow: 1px 1px 0px rgba(243, 230, 208, 0.5);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+  <body class="bg-paper text-[#2c1c11]">
+    <div id="root"></div>
+  </body>
+</html>
