@@ -26,6 +26,36 @@ const App: React.FC = () => {
     gameStateRef.current = gameState;
   }, [gameState]);
 
+  const handleStart = () => {
+    if (gameRef.current && gameRef.current.scene) {
+      const scene = gameRef.current.scene.getScene('GameScene');
+      if (scene) {
+        scene.currentFuel = MAX_FUEL;
+        scene.currentScore = 0;
+        scene.introPhase = 0;
+        scene.scene.restart();
+        setGameState(GameState.INTRO);
+        setScore(0);
+        setFuel(MAX_FUEL);
+      }
+    }
+  };
+
+  // Global key listener for Space bar to start/restart
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        // Prevent page scrolling
+        e.preventDefault();
+        if (gameState === GameState.START || gameState === GameState.GAME_OVER) {
+          handleStart();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [gameState]);
+
   useEffect(() => {
     const phaserInstance = (window as any).Phaser;
     if (gameRef.current || !phaserInstance) return;
@@ -272,21 +302,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const handleStart = () => {
-    if (gameRef.current && gameRef.current.scene) {
-      const scene = gameRef.current.scene.getScene('GameScene');
-      if (scene) {
-        scene.currentFuel = MAX_FUEL;
-        scene.currentScore = 0;
-        scene.introPhase = 0;
-        scene.scene.restart();
-        setGameState(GameState.INTRO);
-        setScore(0);
-        setFuel(MAX_FUEL);
-      }
-    }
-  };
-
   useEffect(() => {
     if (score > highScore) setHighScore(score);
   }, [score, highScore]);
@@ -344,7 +359,8 @@ const App: React.FC = () => {
 
       {gameState === GameState.GAME_OVER && (
         <div className="absolute inset-0 flex items-center justify-center z-50 bg-[#2c1c11]/90 backdrop-blur-sm">
-            <div className="text-center p-8 border-4 border-[#f3e6d0] max-w-md bg-[#f3e6d0] shadow-2xl">
+            <div className="text-center p-8 border-4 border-[#2c1c11] max-w-md bg-[#f3e6d0] shadow-2xl relative">
+                <div className="absolute top-2 left-2 right-2 bottom-2 border border-[#2c1c11] opacity-50 pointer-events-none"></div>
                 <h2 className="text-5xl font-black mb-2 ink-text uppercase">{STRINGS.GAME_OVER_TITLE}</h2>
                 <p className="text-xl mb-6">{STRINGS.GAME_OVER_DESC}</p>
                 <p className="text-3xl font-bold mb-8">{STRINGS.SCORE_PREFIX}{score}</p>
