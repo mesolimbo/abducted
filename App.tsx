@@ -33,6 +33,7 @@ const App: React.FC = () => {
         scene.currentFuel = MAX_FUEL;
         scene.currentScore = 0;
         scene.introPhase = 0;
+        scene.isDying = false;
         scene.scene.restart();
         setGameState(GameState.INTRO);
         setScore(0);
@@ -46,8 +47,8 @@ const App: React.FC = () => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         // Prevent page scrolling
-        e.preventDefault();
         if (gameState === GameState.START || gameState === GameState.GAME_OVER) {
+          e.preventDefault();
           handleStart();
         }
       }
@@ -71,6 +72,7 @@ const App: React.FC = () => {
       currentScore: number = 0;
       spawnTimer: number = 0;
       lastUiUpdate: number = 0;
+      isDying: boolean = false;
       
       introPhase: number = 0;
       spaceKey: any;
@@ -88,10 +90,13 @@ const App: React.FC = () => {
         this.load.image('ground', getSvgDataUri(ASSET_SVGS.ground));
         this.load.image('beam', getSvgDataUri(ASSET_SVGS.beam));
         this.load.image('cloud', getSvgDataUri(ASSET_SVGS.cloud));
+        this.load.image('explosion', getSvgDataUri(ASSET_SVGS.explosion));
+        this.load.image('splat', getSvgDataUri(ASSET_SVGS.splat));
       }
 
       create() {
         const { width, height } = this.scale;
+        this.isDying = false;
         
         this.clouds = this.add.group();
         this.obstacles = this.physics.add.group();
@@ -103,7 +108,7 @@ const App: React.FC = () => {
         }
 
         // Ground
-        this.ground = this.add.tileSprite(width/2, height - 40, width, 80, 'ground');
+        this.ground = this.add.tileSprite(width / 2, height - 40, width, 80, 'ground');
         this.physics.add.existing(this.ground, true);
         
         // Setup initial buildings
@@ -128,20 +133,41 @@ const App: React.FC = () => {
         this.cow.body.setSize(this.cow.width * 0.8, this.cow.height * 0.8);
 
         // Collision logic
-        const onFatalCollision = () => {
-          if (gameStateRef.current === GameState.PLAYING) {
-            this.events.emit('internal-game-over');
+        const onFatalCollision = (source: 'ufo' | 'cow') => {
+          if (gameStateRef.current === GameState.PLAYING && !this.isDying) {
+            this.isDying = true;
+            this.beam.setVisible(false);
+            
+            if (source === 'ufo') {
+              this.add.image(this.player.x, this.player.y, 'explosion').setScale(1.2);
+              this.player.setVisible(false);
+            } else {
+              this.add.image(this.cow.x, this.cow.y, 'splat').setScale(1.0);
+              this.cow.setVisible(false);
+            }
+
+            // Stop movement
+            this.obstacles.getChildren().forEach((obs: any) => {
+              if (obs.body) obs.body.velocity.x = 0;
+            });
+            this.player.body.setGravityY(0);
+            this.player.body.setVelocity(0, 0);
+
+            // Wait a moment for visual impact
+            this.time.delayedCall(700, () => {
+              this.events.emit('internal-game-over');
+            });
           }
         };
 
-        this.physics.add.overlap(this.cow, this.obstacles, onFatalCollision);
-        this.physics.add.overlap(this.player, this.obstacles, onFatalCollision);
-        this.physics.add.collider(this.player, this.ground, onFatalCollision);
+        this.physics.add.overlap(this.cow, this.obstacles, () => onFatalCollision('cow'));
+        this.physics.add.overlap(this.player, this.obstacles, () => onFatalCollision('ufo'));
+        this.physics.add.collider(this.player, this.ground, () => onFatalCollision('ufo'));
         
         this.physics.add.overlap(this.player, this.cow, () => {
           const dist = phaserInstance.Math.Distance.Between(this.player.x, this.player.y, this.cow.x, this.cow.y);
-          if (dist < 40 && gameStateRef.current === GameState.PLAYING) {
-             onFatalCollision();
+          if (dist < 40 && gameStateRef.current === GameState.PLAYING && !this.isDying) {
+             onFatalCollision('ufo');
           }
         });
 
@@ -152,6 +178,47 @@ const App: React.FC = () => {
            this.scene.pause();
            setGameState(GameState.GAME_OVER);
         });
+
+        // Listen for resize events
+        this.scale.on('resize', this.onResize, this);
+      }
+
+      onResize(gameSize: any) {
+        const width = gameSize.width;
+        const height = gameSize.height;
+
+        // Reposition Ground
+        this.ground.width = width;
+        this.ground.x = width / 2;
+        this.ground.y = height - 40;
+        if (this.ground.body) {
+          this.ground.body.updateFromGameObject();
+        }
+
+        // Reposition obstacles so they don't float
+        const groundY = height - 80;
+        this.obstacles.children.iterate((obs: any) => {
+          if (obs) {
+            obs.y = groundY;
+            if (obs.body) {
+              // Update physics body to new Y
+              obs.body.y = groundY - obs.displayHeight;
+            }
+          }
+        });
+
+        // Reposition clouds to new width
+        this.clouds.children.iterate((cloud: any) => {
+          if (cloud && cloud.x > width) {
+            cloud.x = phaserInstance.Math.Between(0, width);
+          }
+        });
+
+        // Snap cow to ground if necessary
+        if (!this.isDying) {
+          const targetCowY = this.player.y + 200;
+          this.cow.y = Math.min(groundY - 9, targetCowY);
+        }
       }
 
       update(time: number, delta: number) {
@@ -162,7 +229,7 @@ const App: React.FC = () => {
           return;
         }
 
-        if (gameStateRef.current !== GameState.PLAYING) return;
+        if (gameStateRef.current !== GameState.PLAYING || this.isDying) return;
 
         const isCurrentlyThrusting = this.spaceKey.isDown || this.input.activePointer.isDown;
         const groundY = height - 80;
@@ -185,7 +252,7 @@ const App: React.FC = () => {
           this.currentFuel = Math.min(MAX_FUEL, this.currentFuel + FUEL_RECHARGE);
         }
 
-        // Positions: Separation increased to 200px (further away as requested)
+        // Positions: Separation set to 200px
         const targetCowY = this.player.y + 200;
         this.cow.x = this.player.x;
         // Cow sits slightly higher on ground (origin is center, feet are 9px down)
@@ -193,7 +260,7 @@ const App: React.FC = () => {
 
         this.beam.x = this.player.x;
         this.beam.y = this.player.y + 5;
-        // Beam extends to cow's feet (cow center + half height offset)
+        // Beam extends to cow's feet
         this.beam.displayHeight = Math.max(0, (this.cow.y + 9) - this.beam.y);
         this.beam.setVisible(true);
 
@@ -207,7 +274,7 @@ const App: React.FC = () => {
         if (this.spawnTimer > SPAWN_RATE * 16.6) {
           this.spawnTimer = 0;
           const type = Math.random() > 0.5 ? 'barn' : 'silo';
-          const obs = this.obstacles.create(width + 150, height - 80, type);
+          const obs = this.obstacles.create(width + 150, groundY, type);
           obs.setOrigin(0.5, 1);
           obs.body.setAllowGravity(false);
           obs.body.velocity.x = -GAME_SPEED * 60;
@@ -255,11 +322,9 @@ const App: React.FC = () => {
           this.beam.x = this.player.x;
           this.beam.y = this.player.y + 5;
           
-          // Use same separation for intro consistency
           const targetCowY = this.player.y + 200;
           if (this.cow.y > targetCowY) {
             this.cow.y -= 2.5;
-            // Beam extends to feet even during intro lift
             this.beam.displayHeight = (this.cow.y + 9) - this.beam.y;
           } else {
             this.cow.y = targetCowY;
@@ -277,9 +342,12 @@ const App: React.FC = () => {
 
     const config = {
       type: phaserInstance.AUTO,
-      width: window.innerWidth,
-      height: window.innerHeight,
-      parent: 'game-container',
+      scale: {
+        mode: phaserInstance.Scale.RESIZE,
+        parent: 'game-container',
+        width: '100%',
+        height: '100%'
+      },
       backgroundColor: '#f3e6d0',
       transparent: true,
       physics: {

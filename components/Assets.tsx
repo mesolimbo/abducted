@@ -69,6 +69,19 @@ export const ASSET_SVGS = {
   cloud: `
     <svg xmlns="http://www.w3.org/2000/svg" width="160" height="150" viewBox="0 0 160 150">
       <path d="M25,60 Q40,30 65,50 Q80,20 110,50 Q130,40 140,70 Q160,80 150,110 Q140,140 100,130 Q60,150 40,120 Q10,130 10,90 Q5,70 25,60 Z" fill="#fff" stroke="#2c1c11" stroke-width="2" />
+    </svg>`,
+  explosion: `
+    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+      <path d="M50,10 L55,40 L85,20 L65,50 L95,60 L60,65 L75,95 L50,70 L25,95 L40,65 L5,60 L35,50 L15,20 L45,40 Z" fill="none" stroke="#2c1c11" stroke-width="3" />
+      <circle cx="50" cy="55" r="10" fill="#2c1c11" />
+    </svg>`,
+  splat: `
+    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+      <path d="M50,20 Q60,10 70,25 Q90,15 85,45 Q95,65 75,75 Q65,95 40,85 Q15,95 10,65 Q5,35 30,25 Q20,5 50,20" fill="#991b1b" />
+      <circle cx="35" cy="40" r="4" fill="#991b1b" />
+      <circle cx="65" cy="65" r="5" fill="#991b1b" />
+      <circle cx="20" cy="70" r="3" fill="#991b1b" />
+      <circle cx="75" cy="30" r="3" fill="#991b1b" />
     </svg>`
 };
 
