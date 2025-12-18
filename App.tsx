@@ -19,6 +19,7 @@ const App: React.FC = () => {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [fuel, setFuel] = useState(MAX_FUEL);
+  const [deathReason, setDeathReason] = useState<'ufo' | 'cow' | null>(null);
   const gameRef = useRef<any>(null);
   
   const gameStateRef = useRef<GameState>(GameState.START);
@@ -36,6 +37,7 @@ const App: React.FC = () => {
         scene.isDying = false;
         scene.scene.restart();
         setGameState(GameState.INTRO);
+        setDeathReason(null);
         setScore(0);
         setFuel(MAX_FUEL);
       }
@@ -112,7 +114,8 @@ const App: React.FC = () => {
         this.physics.add.existing(this.ground, true);
         
         // Setup initial buildings
-        const startingBarn = this.obstacles.create(width * 0.6, height - 80, 'barn');
+        const groundY = height - 80;
+        const startingBarn = this.obstacles.create(width * 0.6, groundY, 'barn');
         startingBarn.setOrigin(0.5, 1);
         startingBarn.body.setAllowGravity(false);
 
@@ -155,7 +158,7 @@ const App: React.FC = () => {
 
             // Wait a moment for visual impact
             this.time.delayedCall(700, () => {
-              this.events.emit('internal-game-over');
+              this.events.emit('internal-game-over', source);
             });
           }
         };
@@ -174,8 +177,9 @@ const App: React.FC = () => {
         this.spaceKey = this.input.keyboard.addKey(phaserInstance.Input.Keyboard.KeyCodes.SPACE);
         this.input.activePointer.isDown = false;
 
-        this.events.on('internal-game-over', () => {
+        this.events.on('internal-game-over', (reason: 'ufo' | 'cow') => {
            this.scene.pause();
+           setDeathReason(reason);
            setGameState(GameState.GAME_OVER);
         });
 
@@ -201,13 +205,12 @@ const App: React.FC = () => {
           if (obs) {
             obs.y = groundY;
             if (obs.body) {
-              // Update physics body to new Y
               obs.body.y = groundY - obs.displayHeight;
             }
           }
         });
 
-        // Reposition clouds to new width
+        // Reposition clouds
         this.clouds.children.iterate((cloud: any) => {
           if (cloud && cloud.x > width) {
             cloud.x = phaserInstance.Math.Between(0, width);
@@ -238,7 +241,6 @@ const App: React.FC = () => {
           if (this.currentFuel > 0) {
             this.player.body.velocity.y += THRUST * 50;
             
-            // Calculate altitude-based penalty
             const altitude = Math.max(0, groundY - this.player.y);
             const altitudeMultiplier = 1 + (altitude / height) * 2.8; 
             
@@ -252,15 +254,12 @@ const App: React.FC = () => {
           this.currentFuel = Math.min(MAX_FUEL, this.currentFuel + FUEL_RECHARGE);
         }
 
-        // Positions: Separation set to 200px
         const targetCowY = this.player.y + 200;
         this.cow.x = this.player.x;
-        // Cow sits slightly higher on ground (origin is center, feet are 9px down)
         this.cow.y = Math.min(groundY - 9, targetCowY);
 
         this.beam.x = this.player.x;
         this.beam.y = this.player.y + 5;
-        // Beam extends to cow's feet
         this.beam.displayHeight = Math.max(0, (this.cow.y + 9) - this.beam.y);
         this.beam.setVisible(true);
 
@@ -430,7 +429,9 @@ const App: React.FC = () => {
             <div className="text-center p-8 border-4 border-[#2c1c11] max-w-md bg-[#f3e6d0] shadow-2xl relative">
                 <div className="absolute top-2 left-2 right-2 bottom-2 border border-[#2c1c11] opacity-50 pointer-events-none"></div>
                 <h2 className="text-5xl font-black mb-2 ink-text uppercase">{STRINGS.GAME_OVER_TITLE}</h2>
-                <p className="text-xl mb-6">{STRINGS.GAME_OVER_DESC}</p>
+                <p className="text-2xl mb-6 italic border-b border-[#2c1c11] inline-block px-4 pb-1">
+                    {deathReason === 'ufo' ? STRINGS.REASON_UFO : STRINGS.REASON_COW}
+                </p>
                 <p className="text-3xl font-bold mb-8">{STRINGS.SCORE_PREFIX}{score}</p>
                 <button 
                     onClick={handleStart}
