@@ -99,8 +99,8 @@ export class GameScene extends Phaser.Scene {
       this.player.height * 0.4
     );
 
-    // Cow
-    this.cow = this.physics.add.sprite(width * 0.15, height - 100, 'cow');
+    // Cow - starts on the ground, will be abducted during intro
+    this.cow = this.physics.add.sprite(width * 0.15, groundY - 9, 'cow');
     this.cow.setScale(0.6);
     this.cow.body!.setAllowGravity(false);
     (this.cow.body as Phaser.Physics.Arcade.Body).setSize(
