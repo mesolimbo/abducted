@@ -69,8 +69,8 @@ export class MenuScene extends Phaser.Scene {
     const buttonY = boxTop + boxHeight - 60;
 
     // Instructions - centered between divider and button
-    const instructionText = STRINGS.INSTRUCTIONS.PILOT + ' Spacebar or Touch.\n\n' +
-      STRINGS.INSTRUCTIONS.GOAL + '\n\nFlying higher is safer but drains fuel rapidly!\nStay low to survive.';
+    const instructionText = `${STRINGS.INSTRUCTIONS.PILOT} ${STRINGS.INSTRUCTIONS.CONTROLS}.\n\n` +
+      `${STRINGS.INSTRUCTIONS.GOAL}\n\n${STRINGS.INSTRUCTIONS.ALTITUDE_WARNING}\n${STRINGS.INSTRUCTIONS.SURVIVAL_TIP}`;
 
     const contentAreaTop = dividerY + 10;
     const contentAreaBottom = buttonY - 35;

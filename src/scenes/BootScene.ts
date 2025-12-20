@@ -1,3 +1,5 @@
+import { STRINGS } from '../../utils/strings';
+
 export class BootScene extends Phaser.Scene {
   constructor() {
     super('BootScene');
@@ -6,7 +8,7 @@ export class BootScene extends Phaser.Scene {
   preload(): void {
     // Show loading text
     const { width, height } = this.scale;
-    const loadingText = this.add.text(width / 2, height / 2, 'Loading...', {
+    const loadingText = this.add.text(width / 2, height / 2, STRINGS.LOADING, {
       fontFamily: 'IM Fell English',
       fontSize: '32px',
       color: '#2c1c11'
@@ -26,7 +28,7 @@ export class BootScene extends Phaser.Scene {
 
     // Update loading progress
     this.load.on('progress', (value: number) => {
-      loadingText.setText('Loading... ' + Math.round(value * 100) + '%');
+      loadingText.setText(STRINGS.LOADING_PROGRESS(Math.round(value * 100)));
     });
   }
 

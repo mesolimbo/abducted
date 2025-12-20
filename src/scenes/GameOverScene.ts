@@ -69,7 +69,7 @@ export class GameOverScene extends Phaser.Scene {
 
     // High score (if achieved)
     if (this.score >= this.highScore && this.score > 0) {
-      this.add.text(centerX, centerY + 55, 'New High Score!', {
+      this.add.text(centerX, centerY + 55, STRINGS.NEW_HIGH_SCORE, {
         fontFamily: 'IM Fell English',
         fontSize: '18px',
         color: '#991b1b',
