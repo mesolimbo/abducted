@@ -100,7 +100,7 @@ export class GameScene extends Phaser.Scene {
     );
 
     // Cow - starts on the ground, will be abducted during intro
-    this.cow = this.physics.add.sprite(width * 0.15, groundY - 9, 'cow');
+    this.cow = this.physics.add.sprite(width * 0.15, groundY - 13, 'cow');
     this.cow.setScale(0.6);
     this.cow.body!.setAllowGravity(false);
     (this.cow.body as Phaser.Physics.Arcade.Body).setSize(
@@ -285,12 +285,12 @@ export class GameScene extends Phaser.Scene {
     // Update cow position (follows UFO)
     const targetCowY = this.player.y + 200;
     this.cow.x = this.player.x;
-    this.cow.y = Math.min(groundY - 9, targetCowY);
+    this.cow.y = Math.min(groundY - 13, targetCowY);
 
     // Update beam
     this.beam.x = this.player.x;
     this.beam.y = this.player.y + 5;
-    this.beam.displayHeight = Math.max(0, (this.cow.y + 9) - this.beam.y);
+    this.beam.displayHeight = Math.max(0, (this.cow.y + 17) - this.beam.y);
     this.beam.setVisible(true);
 
     // Scroll ground and clouds
@@ -378,7 +378,7 @@ export class GameScene extends Phaser.Scene {
       const targetCowY = this.player.y + 200;
       if (this.cow.y > targetCowY) {
         this.cow.y -= 2.5;
-        this.beam.displayHeight = (this.cow.y + 9) - this.beam.y;
+        this.beam.displayHeight = (this.cow.y + 17) - this.beam.y;
       } else {
         this.cow.y = targetCowY;
         this.introPhase = 2;
