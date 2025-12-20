@@ -91,7 +91,8 @@ export class GameScene extends Phaser.Scene {
 
     // Player (UFO) - start off-screen
     this.player = this.physics.add.sprite(-300, -300, 'ufo');
-    this.player.setScale(0.22);
+    this.player.setScale(1);
+    this.player.setDepth(200); // Render above HUD
     this.player.setCollideWorldBounds(true);
     this.player.body!.setAllowGravity(false);
     (this.player.body as Phaser.Physics.Arcade.Body).setSize(

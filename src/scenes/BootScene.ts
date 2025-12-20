@@ -15,8 +15,8 @@ export class BootScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // Load all SVG assets
-    this.load.svg('ufo', 'assets/ufo.svg');
-    this.load.svg('ufo_thrust', 'assets/ufo_thrust.svg');
+    this.load.image('ufo', 'assets/ufo.png');
+    this.load.image('ufo_thrust', 'assets/ufo_thrust.png');
     this.load.svg('cow', 'assets/cow.svg');
     this.load.svg('barn', 'assets/barn.svg');
     this.load.svg('silo', 'assets/silo.svg');
