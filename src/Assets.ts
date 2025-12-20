@@ -1,4 +1,4 @@
-// This file now provides raw SVG strings for Phaser to load as textures
+// SVG assets for Phaser textures
 export const ASSET_SVGS = {
   ufo: `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60">
@@ -85,6 +85,6 @@ export const ASSET_SVGS = {
     </svg>`
 };
 
-export const getSvgDataUri = (svgString: string) => {
-    return 'data:image/svg+xml;base64,' + btoa(svgString.trim());
+export const getSvgDataUri = (svgString: string): string => {
+  return 'data:image/svg+xml;base64,' + btoa(svgString.trim());
 };
