@@ -28,7 +28,7 @@ export class MenuScene extends Phaser.Scene {
     this.add.image(width * 0.6, groundY, 'barn').setOrigin(0.5, 1).setDepth(0);
 
     // Cow on ground
-    this.add.image(width * 0.15, groundY - 13, 'cow').setScale(0.6).setDepth(0);
+    this.add.image(width * 0.15, groundY - 13, 'cow-static').setScale(0.6).setDepth(0);
 
     // Semi-transparent background overlay
     this.add.rectangle(centerX, centerY, width, height, 0xf3e6d0, 0.8).setDepth(1);
