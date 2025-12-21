@@ -20,9 +20,9 @@ export class BootScene extends Phaser.Scene {
     this.load.svg('cow', 'assets/cow.svg');
     this.load.svg('barn', 'assets/barn.svg');
     this.load.svg('silo', 'assets/silo.svg');
-    this.load.svg('ground', 'assets/ground.svg');
+    this.load.image('ground', 'assets/ground.png');
     this.load.svg('beam', 'assets/beam.svg');
-    this.load.svg('cloud', 'assets/cloud.svg');
+    this.load.image('cloud', 'assets/cloud.png');
     this.load.svg('explosion', 'assets/explosion.svg');
     this.load.svg('splat', 'assets/splat.svg');
 

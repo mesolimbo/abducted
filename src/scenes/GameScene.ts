@@ -75,6 +75,7 @@ export class GameScene extends Phaser.Scene {
 
     // Ground
     this.ground = this.add.tileSprite(width / 2, height - 40, width, 80, 'ground');
+    this.ground.setDepth(10);
     this.physics.add.existing(this.ground, true);
 
     // Obstacles group
@@ -82,8 +83,9 @@ export class GameScene extends Phaser.Scene {
 
     // Starting barn
     const groundY = height - 80;
-    const startingBarn = this.obstacles.create(width * 0.6, groundY, 'barn');
+    const startingBarn = this.obstacles.create(width * 0.6, groundY + 5, 'barn');
     startingBarn.setOrigin(0.5, 1);
+    startingBarn.setDepth(5);
     startingBarn.body.setAllowGravity(false);
 
     // Tractor beam
@@ -234,7 +236,7 @@ export class GameScene extends Phaser.Scene {
     const groundY = height - 80;
     this.obstacles.children.iterate((obs: any) => {
       if (obs) {
-        obs.y = groundY;
+        obs.y = groundY + 5;
         if (obs.body) {
           obs.body.y = groundY - obs.displayHeight;
         }
@@ -294,10 +296,10 @@ export class GameScene extends Phaser.Scene {
     this.beam.displayHeight = Math.max(0, (this.cow.y + 17) - this.beam.y);
     this.beam.setVisible(true);
 
-    // Scroll ground and clouds
-    this.ground.tilePositionX += GAME_SPEED;
+    // Scroll ground and clouds (match building velocity: GAME_SPEED * 60 pixels/sec)
+    this.ground.tilePositionX += GAME_SPEED * 60 * (delta / 1000);
     this.clouds.children.iterate((c: any) => {
-      c.x -= GAME_SPEED * 0.2;
+      c.x -= GAME_SPEED * 60 * 0.2 * (delta / 1000);
       if (c.x < -100) c.x = width + 100;
       return true;
     });
@@ -307,8 +309,9 @@ export class GameScene extends Phaser.Scene {
     if (this.spawnTimer > SPAWN_RATE * 16.6) {
       this.spawnTimer = 0;
       const type = Math.random() > 0.5 ? 'barn' : 'silo';
-      const obs = this.obstacles.create(width + 150, groundY, type);
+      const obs = this.obstacles.create(width + 150, groundY + 5, type);
       obs.setOrigin(0.5, 1);
+      obs.setDepth(5);
       obs.body.setAllowGravity(false);
       obs.body.velocity.x = -GAME_SPEED * 60;
       obs.passed = false;
