@@ -23,8 +23,8 @@ export class BootScene extends Phaser.Scene {
     this.load.image('ground', 'assets/ground.png');
     this.load.svg('beam', 'assets/beam.svg');
     this.load.image('cloud', 'assets/cloud.png');
-    this.load.svg('explosion', 'assets/explosion.svg');
-    this.load.svg('splat', 'assets/splat.svg');
+    this.load.image('explosion', 'assets/explosion.png');
+    this.load.image('splat', 'assets/splat.png');
 
     // Update loading progress
     this.load.on('progress', (value: number) => {
