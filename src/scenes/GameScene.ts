@@ -219,6 +219,9 @@ export class GameScene extends Phaser.Scene {
     } else if (source === 'cow') {
       this.add.image(this.cow.x, this.cow.y, 'splat').setScale(1.0);
       this.cow.setVisible(false);
+      if (this.mooSound.isPlaying) {
+        this.mooSound.stop();
+      }
       this.splatSound.play();
     } else {
       // Both UFO and cow collided
@@ -226,6 +229,9 @@ export class GameScene extends Phaser.Scene {
       this.add.image(this.player.x, this.player.y, 'explosion').setScale(1.2).setDepth(51);
       this.player.setVisible(false);
       this.cow.setVisible(false);
+      if (this.mooSound.isPlaying) {
+        this.mooSound.stop();
+      }
       this.crashSound.play();
       this.splatSound.play();
     }
@@ -447,7 +453,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   scheduleRandomMoo(): void {
-    const delay = Phaser.Math.Between(40000, 60000); // 40-60 seconds
+    const delay = Phaser.Math.Between(20000, 40000); // 20-40 seconds
     this.mooTimer = this.time.delayedCall(delay, () => {
       if (this.isPlaying && !this.isDying) {
         this.mooSound.play();

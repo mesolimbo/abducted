@@ -1,4 +1,4 @@
-# Makefile for Abduction: The Grazing Limit
+# Makefile for Abduction: Chaos at The Farm
 # Phaser game build and distribution
 
 GAME_NAME = abduction
@@ -39,7 +39,7 @@ clean:
 
 # Show help
 help:
-	@echo "Abduction: The Grazing Limit - Build Targets"
+	@echo "Abduction: Chaos at The Farm - Build Targets"
 	@echo ""
 	@echo "  make install  - Install npm dependencies"
 	@echo "  make dev      - Start development server (http://localhost:3000)"
