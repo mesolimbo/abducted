@@ -114,10 +114,9 @@ export class GameScene extends Phaser.Scene {
     );
 
     // Cow - starts on the ground, will be abducted during intro
-    // Create cow animation from spritesheet frames
-    if (!this.anims.exists('cow-anim')) {
+    if (!this.anims.exists('dangling')) {
       this.anims.create({
-        key: 'cow-anim',
+        key: 'dangling',
         frames: this.anims.generateFrameNames('cow', {
           prefix: 'cow ',
           suffix: '.aseprite',
@@ -135,7 +134,6 @@ export class GameScene extends Phaser.Scene {
       this.cow.width * 0.8,
       this.cow.height * 0.8
     );
-    this.cow.play('cow-anim');
 
     // Collision handlers
     this.physics.add.overlap(this.cow, this.obstacles, () => this.onFatalCollision('cow'));
@@ -443,6 +441,7 @@ export class GameScene extends Phaser.Scene {
         this.introPhase = 1;
         this.beam.setVisible(true);
         this.mooSound.play();
+        this.cow.play('dangling');
       }
     } else if (this.introPhase === 1) {
       // Abduct the cow
