@@ -125,7 +125,7 @@ export class GameScene extends Phaser.Scene {
         this.cow.x, this.cow.y
       );
       if (dist < 40 && this.isPlaying && !this.isDying) {
-        this.onFatalCollision('ufo');
+        this.onFatalCollision('both');
       }
     });
 
@@ -187,7 +187,7 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(100).setVisible(false);
   }
 
-  onFatalCollision(source: 'ufo' | 'cow'): void {
+  onFatalCollision(source: 'ufo' | 'cow' | 'both'): void {
     if (!this.isPlaying || this.isDying) return;
 
     this.isDying = true;
@@ -196,8 +196,14 @@ export class GameScene extends Phaser.Scene {
     if (source === 'ufo') {
       this.add.image(this.player.x, this.player.y, 'explosion').setScale(1.2);
       this.player.setVisible(false);
-    } else {
+    } else if (source === 'cow') {
       this.add.image(this.cow.x, this.cow.y, 'splat').setScale(1.0);
+      this.cow.setVisible(false);
+    } else {
+      // Both UFO and cow collided
+      this.add.image(this.cow.x, this.cow.y, 'splat').setScale(1.0).setDepth(50);
+      this.add.image(this.player.x, this.player.y, 'explosion').setScale(1.2).setDepth(51);
+      this.player.setVisible(false);
       this.cow.setVisible(false);
     }
 
