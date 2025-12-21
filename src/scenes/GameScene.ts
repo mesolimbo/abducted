@@ -61,16 +61,20 @@ export class GameScene extends Phaser.Scene {
   create(): void {
     const { width, height } = this.scale;
 
-    // Create clouds (background)
+    // Create clouds (background) - evenly distributed, smaller clouds near horizon
     this.clouds = this.add.group();
     for (let i = 0; i < 3; i++) {
-      this.clouds.create(
-        Phaser.Math.Between(0, width),
-        Phaser.Math.Between(50, 200),
+      const scale = Phaser.Math.FloatBetween(0.4, 1);
+      // Smaller clouds (low scale) closer to horizon (higher y), larger clouds higher up (lower y)
+      const y = 50 + (1 - scale) * 200;
+      const cloud = this.clouds.create(
+        (width / 3) * i + Phaser.Math.Between(50, width / 3 - 50),
+        y,
         'cloud'
-      )
-        .setAlpha(0.3)
-        .setScale(Phaser.Math.FloatBetween(0.5, 1));
+      );
+      cloud.setAlpha(0.3);
+      cloud.setScale(scale);
+      cloud.setDepth(6); // Above buildings (5), below ground (10)
     }
 
     // Ground
@@ -83,7 +87,7 @@ export class GameScene extends Phaser.Scene {
 
     // Starting barn
     const groundY = height - 80;
-    const startingBarn = this.obstacles.create(width * 0.6, groundY + 5, 'barn');
+    const startingBarn = this.obstacles.create(width * 0.6, groundY + 10, 'barn');
     startingBarn.setOrigin(0.5, 1);
     startingBarn.setDepth(5);
     startingBarn.body.setAllowGravity(false);
@@ -236,7 +240,7 @@ export class GameScene extends Phaser.Scene {
     const groundY = height - 80;
     this.obstacles.children.iterate((obs: any) => {
       if (obs) {
-        obs.y = groundY + 5;
+        obs.y = groundY + 10;
         if (obs.body) {
           obs.body.y = groundY - obs.displayHeight;
         }
@@ -300,7 +304,13 @@ export class GameScene extends Phaser.Scene {
     this.ground.tilePositionX += GAME_SPEED * 60 * (delta / 1000);
     this.clouds.children.iterate((c: any) => {
       c.x -= GAME_SPEED * 60 * 0.2 * (delta / 1000);
-      if (c.x < -100) c.x = width + 100;
+      if (c.x < -100) {
+        c.x = width + 100;
+        // Randomize scale and position when respawning
+        const newScale = Phaser.Math.FloatBetween(0.4, 1);
+        c.setScale(newScale);
+        c.y = 50 + (1 - newScale) * 200;
+      }
       return true;
     });
 
@@ -309,7 +319,7 @@ export class GameScene extends Phaser.Scene {
     if (this.spawnTimer > SPAWN_RATE * 16.6) {
       this.spawnTimer = 0;
       const type = Math.random() > 0.5 ? 'barn' : 'silo';
-      const obs = this.obstacles.create(width + 150, groundY + 5, type);
+      const obs = this.obstacles.create(width + 150, groundY + 10, type);
       obs.setOrigin(0.5, 1);
       obs.setDepth(5);
       obs.body.setAllowGravity(false);
