@@ -29,12 +29,12 @@ preview:
 # Create distribution zip for itch.io
 dist: build
 	@echo "Creating distribution package..."
-	@cd dist && zip -r ../$(DIST_ZIP) .
+	@cd docs && zip -r ../$(DIST_ZIP) .
 	@echo "Created $(DIST_ZIP)"
 
 # Clean build artifacts
 clean:
-	rm -rf dist
+	rm -rf docs
 	rm -f $(GAME_NAME)-*.zip
 
 # Show help

@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         }
       },
       build: {
-        outDir: 'dist',
+        outDir: 'docs',
         emptyDirBeforeWrite: true,
         rollupOptions: {
           output: {

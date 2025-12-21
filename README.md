@@ -2,6 +2,8 @@
 
 A retro-styled arcade game where you pilot a UFO to abduct a cow while navigating through farm obstacles. Built with Phaser 3 and TypeScript.
 
+**[Play Now](https://mesolimbo.github.io/abducted/)**
+
 ## Gameplay
 
 - **Objective:** Keep your bovine captive safe while flying through the farms
@@ -37,7 +39,7 @@ npm run dev
 ### Build
 
 ```bash
-# Build for production (outputs to dist/)
+# Build for production (outputs to docs/ for GitHub Pages)
 make build
 # or
 npm run build
@@ -52,6 +54,10 @@ make preview
 # Create zip file for itch.io distribution
 make dist
 ```
+
+### GitHub Pages
+
+The build outputs to `docs/` for easy GitHub Pages deployment. After building, commit the `docs/` folder and enable GitHub Pages in your repository settings (set source to "Deploy from a branch" and select the `docs` folder on your main branch).
 
 ### Clean
 
