@@ -38,6 +38,13 @@ export class GameScene extends Phaser.Scene {
   // Input
   spaceKey!: Phaser.Input.Keyboard.Key;
 
+  // Audio
+  gravidriveSound!: Phaser.Sound.BaseSound;
+  crashSound!: Phaser.Sound.BaseSound;
+  splatSound!: Phaser.Sound.BaseSound;
+  mooSound!: Phaser.Sound.BaseSound;
+  mooTimer?: Phaser.Time.TimerEvent;
+
   constructor() {
     super('GameScene');
   }
@@ -132,6 +139,12 @@ export class GameScene extends Phaser.Scene {
     // Input
     this.spaceKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+    // Audio
+    this.gravidriveSound = this.sound.add('gravidrive', { loop: true });
+    this.crashSound = this.sound.add('crash');
+    this.splatSound = this.sound.add('splat');
+    this.mooSound = this.sound.add('moo');
+
     // Create HUD
     this.createHUD();
 
@@ -192,19 +205,29 @@ export class GameScene extends Phaser.Scene {
 
     this.isDying = true;
     this.beam.setVisible(false);
+    if (this.gravidriveSound.isPlaying) {
+      this.gravidriveSound.stop();
+    }
+    if (this.mooTimer) {
+      this.mooTimer.remove();
+    }
 
     if (source === 'ufo') {
       this.add.image(this.player.x, this.player.y, 'explosion').setScale(1.2);
       this.player.setVisible(false);
+      this.crashSound.play();
     } else if (source === 'cow') {
       this.add.image(this.cow.x, this.cow.y, 'splat').setScale(1.0);
       this.cow.setVisible(false);
+      this.splatSound.play();
     } else {
       // Both UFO and cow collided
       this.add.image(this.cow.x, this.cow.y, 'splat').setScale(1.0).setDepth(50);
       this.add.image(this.player.x, this.player.y, 'explosion').setScale(1.2).setDepth(51);
       this.player.setVisible(false);
       this.cow.setVisible(false);
+      this.crashSound.play();
+      this.splatSound.play();
     }
 
     // Stop movement
@@ -287,12 +310,21 @@ export class GameScene extends Phaser.Scene {
 
         this.currentFuel = Math.max(0, this.currentFuel - (FUEL_CONSUMPTION * altitudeMultiplier));
         this.player.setTexture('ufo_thrust');
+        if (!this.gravidriveSound.isPlaying) {
+          this.gravidriveSound.play();
+        }
       } else {
         this.player.setTexture('ufo');
+        if (this.gravidriveSound.isPlaying) {
+          this.gravidriveSound.stop();
+        }
       }
     } else {
       this.player.setTexture('ufo');
       this.currentFuel = Math.min(MAX_FUEL, this.currentFuel + FUEL_RECHARGE);
+      if (this.gravidriveSound.isPlaying) {
+        this.gravidriveSound.stop();
+      }
     }
 
     // Update cow position (follows UFO)
@@ -389,6 +421,7 @@ export class GameScene extends Phaser.Scene {
         this.player.y = targetY;
         this.introPhase = 1;
         this.beam.setVisible(true);
+        this.mooSound.play();
       }
     } else if (this.introPhase === 1) {
       // Abduct the cow
@@ -409,6 +442,17 @@ export class GameScene extends Phaser.Scene {
       (this.player.body as Phaser.Physics.Arcade.Body).setGravityY(GRAVITY * 1000);
       this.isPlaying = true;
       this.introPhase = 0;
+      this.scheduleRandomMoo();
     }
+  }
+
+  scheduleRandomMoo(): void {
+    const delay = Phaser.Math.Between(40000, 60000); // 40-60 seconds
+    this.mooTimer = this.time.delayedCall(delay, () => {
+      if (this.isPlaying && !this.isDying) {
+        this.mooSound.play();
+        this.scheduleRandomMoo();
+      }
+    });
   }
 }

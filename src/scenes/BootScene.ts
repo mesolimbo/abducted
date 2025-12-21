@@ -26,6 +26,12 @@ export class BootScene extends Phaser.Scene {
     this.load.image('explosion', 'assets/explosion.png');
     this.load.image('splat', 'assets/splat.png');
 
+    // Load audio
+    this.load.audio('gravidrive', 'assets/audio/gravidrive.mp3');
+    this.load.audio('crash', 'assets/audio/crash.mp3');
+    this.load.audio('splat', 'assets/audio/splat.mp3');
+    this.load.audio('moo', 'assets/audio/moo.mp3');
+
     // Update loading progress
     this.load.on('progress', (value: number) => {
       loadingText.setText(STRINGS.LOADING_PROGRESS(Math.round(value * 100)));
