@@ -119,7 +119,6 @@ export class GameScene extends Phaser.Scene {
         key: 'dangling',
         frames: this.anims.generateFrameNames('cow', {
           prefix: 'cow ',
-          suffix: '.aseprite',
           start: 0,
           end: 8
         }),
@@ -441,7 +440,9 @@ export class GameScene extends Phaser.Scene {
         this.introPhase = 1;
         this.beam.setVisible(true);
         this.mooSound.play();
-        this.cow.play('dangling');
+        if (this.anims.exists('dangling')) {
+          this.cow.play({ key: 'dangling', repeat: -1 });
+        }
       }
     } else if (this.introPhase === 1) {
       // Abduct the cow

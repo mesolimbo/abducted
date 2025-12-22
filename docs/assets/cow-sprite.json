@@ -1,5 +1,5 @@
 { "frames": {
-   "cow 0.aseprite": {
+   "cow 0": {
     "frame": { "x": 0, "y": 0, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
@@ -7,7 +7,7 @@
     "sourceSize": { "w": 76, "h": 56 },
     "duration": 83
    },
-   "cow 1.aseprite": {
+   "cow 1": {
     "frame": { "x": 76, "y": 0, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
@@ -15,7 +15,7 @@
     "sourceSize": { "w": 76, "h": 56 },
     "duration": 83
    },
-   "cow 2.aseprite": {
+   "cow 2": {
     "frame": { "x": 152, "y": 0, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
@@ -23,7 +23,7 @@
     "sourceSize": { "w": 76, "h": 56 },
     "duration": 83
    },
-   "cow 3.aseprite": {
+   "cow 3": {
     "frame": { "x": 0, "y": 56, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
@@ -31,7 +31,7 @@
     "sourceSize": { "w": 76, "h": 56 },
     "duration": 83
    },
-   "cow 4.aseprite": {
+   "cow 4": {
     "frame": { "x": 76, "y": 56, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
@@ -39,7 +39,7 @@
     "sourceSize": { "w": 76, "h": 56 },
     "duration": 83
    },
-   "cow 5.aseprite": {
+   "cow 5": {
     "frame": { "x": 152, "y": 56, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
@@ -47,7 +47,7 @@
     "sourceSize": { "w": 76, "h": 56 },
     "duration": 83
    },
-   "cow 6.aseprite": {
+   "cow 6": {
     "frame": { "x": 0, "y": 112, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
@@ -55,7 +55,7 @@
     "sourceSize": { "w": 76, "h": 56 },
     "duration": 83
    },
-   "cow 7.aseprite": {
+   "cow 7": {
     "frame": { "x": 76, "y": 112, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
@@ -63,7 +63,7 @@
     "sourceSize": { "w": 76, "h": 56 },
     "duration": 83
    },
-   "cow 8.aseprite": {
+   "cow 8": {
     "frame": { "x": 152, "y": 112, "w": 76, "h": 56 },
     "rotated": false,
     "trimmed": false,
