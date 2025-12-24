@@ -2,7 +2,7 @@
 
 A retro-styled arcade game where you pilot a UFO to abduct a cow while navigating through farm obstacles. Built with Phaser 3 and TypeScript.
 
-**[Play Now](https://mesolimbo.github.io/abducted/)**
+**[Play Now](https://mesolimbo.github.io/abducted/)** or **[Play on itch.io](https://tinymicrobe.itch.io/abduction)**
 
 ## Gameplay
 
