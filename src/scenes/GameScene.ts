@@ -5,6 +5,8 @@ import {
   MAX_FUEL,
   FUEL_CONSUMPTION,
   FUEL_RECHARGE,
+  VERTICAL_FUEL_CONSUMPTION_MULTIPLIER,
+  VERTICAL_FUEL_RECHARGE_MULTIPLIER,
   SPAWN_RATE,
 } from '../../utils/gameConstants';
 import { STRINGS } from '../../utils/strings';
@@ -317,6 +319,7 @@ export class GameScene extends Phaser.Scene {
 
     const isThrusting = this.spaceKey.isDown || this.input.activePointer.isDown;
     const groundY = height - 80;
+    const isVerticalMode = height > width;
 
     // Handle thrust and fuel
     if (isThrusting) {
@@ -325,8 +328,9 @@ export class GameScene extends Phaser.Scene {
 
         const altitude = Math.max(0, groundY - this.player.y);
         const altitudeMultiplier = 1 + (altitude / height) * 2.8;
+        const consumptionMultiplier = isVerticalMode ? VERTICAL_FUEL_CONSUMPTION_MULTIPLIER : 1;
 
-        this.currentFuel = Math.max(0, this.currentFuel - (FUEL_CONSUMPTION * altitudeMultiplier));
+        this.currentFuel = Math.max(0, this.currentFuel - (FUEL_CONSUMPTION * altitudeMultiplier * consumptionMultiplier));
         this.player.setTexture('ufo_thrust');
         if (!this.gravidriveSound.isPlaying) {
           this.gravidriveSound.play();
@@ -339,7 +343,8 @@ export class GameScene extends Phaser.Scene {
       }
     } else {
       this.player.setTexture('ufo');
-      this.currentFuel = Math.min(MAX_FUEL, this.currentFuel + FUEL_RECHARGE);
+      const rechargeMultiplier = isVerticalMode ? VERTICAL_FUEL_RECHARGE_MULTIPLIER : 1;
+      this.currentFuel = Math.min(MAX_FUEL, this.currentFuel + FUEL_RECHARGE * rechargeMultiplier);
       if (this.gravidriveSound.isPlaying) {
         this.gravidriveSound.stop();
       }
