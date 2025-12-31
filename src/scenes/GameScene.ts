@@ -116,18 +116,7 @@ export class GameScene extends Phaser.Scene {
     );
 
     // Cow - starts on the ground, will be abducted during intro
-    if (!this.anims.exists('dangling')) {
-      this.anims.create({
-        key: 'dangling',
-        frames: this.anims.generateFrameNames('cow', {
-          prefix: 'cow ',
-          start: 0,
-          end: 8
-        }),
-        frameRate: 12,
-        repeat: -1
-      });
-    }
+    this.anims.createFromAseprite('cow');
     this.cow = this.physics.add.sprite(width * 0.15, groundY - 13, 'cow');
     this.cow.setScale(0.6);
     this.cow.body!.setAllowGravity(false);
